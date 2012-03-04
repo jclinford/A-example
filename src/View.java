@@ -49,7 +49,16 @@ public class View extends JPanel implements Observer
 						
 						g2.setColor(Color.BLACK);
 						g2.draw(r2);
-					}     
+					}
+				
+				if (mode == 0)
+					g2.drawString("Left click to select start node", 0, 10);
+				else if (mode == 1)
+					g2.drawString("Left click to select end node", 0, 10);
+				else if (mode == 2)
+					g2.drawString("Left click to select obstacles. When finished right click to run algorithm", 0, 10);
+				else if (mode == 3)
+					g2.drawString("Algorithm finished. Light blue are visited cells, dark blue is the actual path taken", 0, 10);
 			}
 		};
 
