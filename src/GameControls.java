@@ -15,9 +15,12 @@ public class GameControls implements KeyListener, MouseListener
 	@Override
 	public void keyPressed(KeyEvent e) 
 	{
-		System.out.println("Key down");
+		if (!parentView.myTurn)
+			return;
+		
+		System.out.println("Key down: " + parentView.mode + " " + parentView.myTurn);
 		// only allow player movement if its their turn and if they're in game mode
-		if (parentView.myTurn && parentView.mode == 4)
+		if (parentView.mode == 4)
 		{
 			Node newNode = null;
 			int newCol = 0;
@@ -54,15 +57,18 @@ public class GameControls implements KeyListener, MouseListener
 			{
 				newNode = scene.getNode(newCol, newRow);
 
-				if (newNode.isWall || newNode.isStart)
+				if (newNode.isWall)
 					return;
 
 				scene.goal.isFinish = false;
 				newNode.isFinish = true;
 				scene.goal = newNode;
-				//			parentView.myTurn = false;
-
+				parentView.myTurn = false;
+				
 				parentView.repaint();
+				
+				// run computer
+				parentView.Update();
 
 			} catch(ArrayIndexOutOfBoundsException ex){}
 		}
@@ -76,24 +82,21 @@ public class GameControls implements KeyListener, MouseListener
 		if (parentView.mode == 2 && e.getButton() == MouseEvent.BUTTON3 && 
 				!e.isShiftDown())
 		{
+			// display mode = 3
 			parentView.mode = 3;
 			AStar path = new AStar(scene);
 			
 			System.out.println("Running A*!");
-			path.Run(scene.start, scene.goal);
-			
+			path.Run(scene.start, scene.goal, parentView.mode);
 		}
 		// if we are in mode 2 and right click and shift then user wants to
 		// play a* game
 		else if (parentView.mode == 2 && e.getButton() == MouseEvent.BUTTON3 &&
 				e.isShiftDown())
 		{
+			// game mode = 4
 			parentView.mode = 4;
-			AStar path = new AStar(scene);
-			
 			System.out.println("Playing game");
-			path.Run(scene.start, scene.goal);
-			
 		}
 		
 		
@@ -101,8 +104,10 @@ public class GameControls implements KeyListener, MouseListener
 		int y = e.getY();
 
 		// the coordinates of the mouse click
-		int col = (int) Math.ceil(x / SIZE);
-		int row = (int) Math.ceil(y / SIZE);
+		//int col = (int) Math.ceil(x / SIZE);
+		//int row = (int) Math.ceil(y / SIZE);
+		int col = (int) ( (x) / SIZE);
+		int row = (int) ( (y - SIZE / 2) / SIZE);
 		
 		Node tmpNode = scene.getNode(col, row);
 
@@ -148,6 +153,7 @@ public class GameControls implements KeyListener, MouseListener
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 
+	AStar aStar;
 	View parentView;
 	SceneGraph scene;
 	

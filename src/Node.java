@@ -10,7 +10,6 @@ public class Node
 	{
 		col = c;
 		row = r;
-		isWall = false;
 	}
 	
 	public int getRow()

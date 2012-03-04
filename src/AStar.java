@@ -9,16 +9,19 @@ public class AStar
 {
 	public AStar(SceneGraph s)
 	{
-		openList = new ArrayList<Node>();
-		closedList = new ArrayList<Node>();
 		scene = s;
 	}
 	
-	// run a* algorithm
-	public void Run(Node s, Node g)
+	// run a* algorithm, will return the next node that enemy/start should move to
+	public void Run(Node s, Node g, int m)
 	{
+		openList = new ArrayList<Node>();
+		closedList = new ArrayList<Node>();
+		path = new ArrayList<Node>();
+		
 		start = s;
 		goal = g;
+		mode = m;
 		
 		// calc cost for start node to goal node, and add to open list
 		start.setCost(calcCost(start, goal));
@@ -37,7 +40,7 @@ public class AStar
 			// check to see if we are at the goal, and we can reconstruct the path
 			if (curNode == goal)
 			{
-				reconstrucPath(goal);
+				reconstrucPath(curNode);
 				return;
 			}
 			
@@ -53,6 +56,8 @@ public class AStar
 				CheckAdj();
 			}
 		}
+		
+		return;
 	}
 
 	// find the lowest cost node from the openList, and set where we came from
@@ -168,20 +173,35 @@ public class AStar
 	
 	// reconstruct the path that was taken and mark the appropriate nodes
 	public void reconstrucPath(Node node)
-	{
-		if (node.getCameFrom() != null && node.getCameFrom() != start)
-		{
-			node.getCameFrom().isPath = true;
-			//System.out.println(node.getCol() + " " + node.getRow() + "added to path");
-			
-			reconstrucPath(node.getCameFrom());
+	{	
+		int index = 0;
+		System.out.println("Reconstructing path");
+		
+		while (node.getCameFrom() != null && node != start)
+		{	
+			node.isPath = true;
+			path.add(node);
+			index++;
+			node = node.getCameFrom();
 		}
-		else
+		
+//		System.out.println(node.getCol() + " " + node.getRow());
+
+		// move nodes if in game mode
+		if (mode == 4)
+		{
+			scene.start.isStart = false;
+			path.get(index - 1).isStart = true;
+			scene.start = path.get(index - 1);
+			
 			return;
+		}
 	}
 	
+	private int mode;
 	private ArrayList<Node> openList;
 	private ArrayList<Node> closedList;
+	private ArrayList<Node> path;
 	private Node curNode;
 	private Node start;
 	private Node goal;

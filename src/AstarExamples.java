@@ -27,6 +27,7 @@ public class AstarExamples
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setTitle("A* Example");
 		frame.setLayout(new GridLayout(2, 1));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setContentPane(gameView);
 		frame.addKeyListener(gameControls);
 		frame.addMouseListener(gameControls);

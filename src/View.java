@@ -12,6 +12,7 @@ public class View extends JPanel
 		// 0 = adding start, 1 = adding end, 2 = adding obstacle
 		mode = 0;
 		scene = s;
+		aStar = new AStar(scene);
 
 		setLocation(0, 200);
 		setLayout(new BorderLayout());
@@ -50,21 +51,40 @@ public class View extends JPanel
 						g2.draw(r2);
 					}
 				
+				// display help information at top left
+				g2.setColor(Color.WHITE);
 				if (mode == 0)
 					g2.drawString("Left click to select start node", 0, 10);
 				else if (mode == 1)
 					g2.drawString("Left click to select end node", 0, 10);
 				else if (mode == 2)
-					g2.drawString("Left click to select obstacles. When finished right click to run algorithm", 0, 10);
+					g2.drawString("Left click to select obstacles. When finished right click to run display mode, shift+right click to play game", 0, 10);
 				else if (mode == 3)
 					g2.drawString("Algorithm finished. Light blue are visited cells, dark blue is the actual path taken", 0, 10);
 				else if (mode == 4)
-					g2.drawString("Use arrow keys to move!", 0, 10);
+					g2.drawString("Use arrow keys to run away!", 0, 10);
+				else if (mode == 5)
+					g2.drawString("Game over!", 0, 10);
 			}
 		};
 		
 		add(new JLabel(nodeIcon));
 		setVisible(true);
+	}
+	
+	// update the computer
+	public void Update()
+	{
+		aStar.Run(scene.start, scene.goal, mode);
+		
+		// if they hit us, game over
+		if (scene.start == scene.goal)
+			mode = 5;
+		
+		myTurn = true;
+
+		repaint();
+
 	}
 
 	public SceneGraph scene;
@@ -72,6 +92,8 @@ public class View extends JPanel
 	
 	// used for game mode, turn = true is player turn, turn = false is computer turn
 	public boolean myTurn = true;
+	
+	private AStar aStar;
 	
 	private final static int NUM_SQUARES = 16;
 	private final static int SIZE = 50;
