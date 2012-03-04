@@ -172,7 +172,7 @@ public class AStar
 		if (node.getCameFrom() != null && node.getCameFrom() != start)
 		{
 			node.getCameFrom().isPath = true;
-			System.out.println(node.getCol() + " " + node.getRow() + "added to path");
+			//System.out.println(node.getCol() + " " + node.getRow() + "added to path");
 			
 			reconstrucPath(node.getCameFrom());
 		}

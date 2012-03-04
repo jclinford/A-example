@@ -16,21 +16,26 @@ public class AstarExamples
 {
 	public static void main(String args[]) 
 	{
+		// contains our scene
 		sceneGraph = new SceneGraph();
-
+		// displays the scene
 		gameView = new View(sceneGraph);
-		sceneGraph.addObserver(gameView);
+		// mouse and key listener for controls
+		gameControls = new GameControls(gameView, sceneGraph);
 
 		JFrame frame = new JFrame();
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setTitle("A* Example");
 		frame.setLayout(new GridLayout(2, 1));
 		frame.setContentPane(gameView);
+		frame.addKeyListener(gameControls);
+		frame.addMouseListener(gameControls);
 		frame.show();
 	}
 
 	private static final int WIDTH = 805, HEIGHT = 830;
 
-	public static View gameView;
-	public static SceneGraph sceneGraph;
+	private static GameControls gameControls;
+	private static View gameView;
+	private static SceneGraph sceneGraph;
 }

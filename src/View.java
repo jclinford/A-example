@@ -4,10 +4,8 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
 
-public class View extends JPanel implements Observer
+public class View extends JPanel
 {
 	public View(SceneGraph s)
 	{
@@ -38,12 +36,13 @@ public class View extends JPanel implements Observer
 							g2.setColor(new Color(100, 0, 0));
 						else if (scene.getNode(c, r).isWall)
 							g2.setColor(new Color(175, 125, 0));
-						else if (scene.getNode(c, r).isPath)
+						else if (scene.getNode(c, r).isPath && mode == 3)	// only show paths in example mode
 							g2.setColor(new Color(0, 0, 100));
-						else if (scene.getNode(c, r).wasVisited)
+						else if (scene.getNode(c, r).wasVisited && mode == 3)
 							g2.setColor(new Color(0, 0, 200));
 						else 
 							g2.setColor(Color.GRAY);
+				
 						
 						g2.fill(r2);
 						
@@ -59,85 +58,20 @@ public class View extends JPanel implements Observer
 					g2.drawString("Left click to select obstacles. When finished right click to run algorithm", 0, 10);
 				else if (mode == 3)
 					g2.drawString("Algorithm finished. Light blue are visited cells, dark blue is the actual path taken", 0, 10);
+				else if (mode == 4)
+					g2.drawString("Use arrow keys to move!", 0, 10);
 			}
 		};
-
-		// A listener for click events
-		MouseListener l = new MouseListener()
-		{
-			public void mousePressed(MouseEvent e){}
-			public void mouseExited(MouseEvent e){}
-			public void mouseEntered(MouseEvent e){}
-			public void mouseReleased(MouseEvent e){}
-			public void mouseClicked(MouseEvent e)
-			{
-				if (mode == 2 && e.getButton() == MouseEvent.BUTTON3)
-				{
-					mode = 3;
-					AStar path = new AStar(scene);
-					
-					System.out.println("Running A*!");
-					path.Run(start, goal);
-					
-					repaint();
-				}
-				
-				
-				int x = e.getX();
-				int y = e.getY();
-
-				// the coordinates of the mouse click
-				int col = (int) Math.ceil(x / SIZE);
-				int row = (int) Math.ceil(y / SIZE);
-				
-				Node tmpNode = scene.getNode(col, row);
-
-//    		  System.out.println(scene.getData(xCoord, yCoord).getColor();
-
-				if (mode == 0)
-				{
-					tmpNode.isStart = true;
-					start = tmpNode;
-					
-					repaint();
-					
-					System.out.println("Start selected");
-					mode = 1;
-				}
-				else if (mode == 1)
-				{
-					tmpNode.isFinish = true;
-					goal = tmpNode;
-					
-					repaint();
-					
-					System.out.println("Finish selected");
-					mode = 2;
-				}
-				else if (mode == 2)
-				{
-					tmpNode.isWall = true;
-					
-					repaint();
-					
-					System.out.println("Obstacle made");
-				}
-			}
-		};
-
 		
 		add(new JLabel(nodeIcon));
-		this.addMouseListener(l);
 		setVisible(true);
 	}
 
-	public void update(Observable o, Object arg){}
-
-	private SceneGraph scene;
-	private Node start;
-	private Node goal;
-	
+	public SceneGraph scene;
 	public int mode;
+	
+	// used for game mode, turn = true is player turn, turn = false is computer turn
+	public boolean myTurn = true;
 	
 	private final static int NUM_SQUARES = 16;
 	private final static int SIZE = 50;

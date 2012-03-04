@@ -2,14 +2,11 @@
  * @author John Linford
  */
 
-import java.util.Observable;
-import java.awt.Color;
-
 /*
  *  this is a 16x16 2d Array of Integers.
  *  0 for empty space, 1 for wall, 2 for player, 3 for enemy
  */
-public class SceneGraph extends Observable
+public class SceneGraph
 {
 	public SceneGraph() 
 	{
@@ -20,17 +17,6 @@ public class SceneGraph extends Observable
 			{
 				scene[c][r] = new Node(c, r);
 			}
-	}
-
-	/**
-      Change the data in the model at a particular location
-      @param location the index of the field to change
-      @param value the new value
-	 */
-	public void changePoint(int cCol, int cRow, int nCol, int nRow)
-	{
-		super.setChanged();
-		super.notifyObservers("change");
 	}
 
 	public Node[][] getScene() 
@@ -44,7 +30,10 @@ public class SceneGraph extends Observable
 	}
 
 
-	public int[] selected = new int[2];	//the selected piece
+	// start and goal.. in game mode this is enemy and player respectively
+	public Node start;
+	public Node goal;
+	
 	private Node[][] scene;
 
 	private static final int NUM_SQUARES = 16;
